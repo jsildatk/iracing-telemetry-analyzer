@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script th:src="@{/js/index.js}"></script>
+	<link th:href="@{/css/index.css}" rel="stylesheet"/>
 	<meta charset="UTF-8">
 	<title>Iracing telemetry analyzer</title>
 </head>
 <body>
-<form method="POST" th:action="@{/analyze}" enctype="multipart/form-data">
-	<input type="file" accept=".csv" name="telemetry"/> <br/>
-	<input type="submit" value="Analyze"/>
-</form>
+<div class="wrapper">
+	<h1>Iracing telemetry analyzer</h1>
+	<form method="POST" th:action="@{/analyze}" enctype="multipart/form-data">
+		<label for="telemetry" class="telemetry-upload">
+			Upload telemetry file
+		</label>
+		<input type="file" accept=".csv" id="telemetry" name="telemetry"/> <span id="filename"></span> <br/>
+		<input type="submit" value="Analyze"/>
+	</form>
+</div>
 </body>
 </html>
