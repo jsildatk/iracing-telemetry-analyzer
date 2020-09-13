@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Iracing telemetry analyzer</title>
+</head>
+<body>
+<form method="POST" th:action="@{/analyze}" enctype="multipart/form-data">
+	<input type="file" accept=".csv" name="telemetry"/> <br/>
+	<input type="submit" value="Analyze"/>
+</form>
+</body>
+</html>

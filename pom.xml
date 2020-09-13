@@ -23,6 +23,7 @@
 		<guava.version>29.0-jre</guava.version>
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<slf4j-log4j12.version>1.7.30</slf4j-log4j12.version>
+		<opencsv.version>5.2</opencsv.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +59,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
 		</dependency>
 
 		<dependency>
