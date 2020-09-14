@@ -63,7 +63,7 @@ public class TelemetryDataParserImplTest {
         assertThat(result.get(0), hasSize(1));
     }
     
-    private byte[] createFileContent(String path) throws Exception {
+    public static byte[] createFileContent(String path) throws Exception {
         CSVReader csvReader = new CSVReader(new FileReader(path));
         ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
         for ( String[] lines : csvReader.readAll() ) {

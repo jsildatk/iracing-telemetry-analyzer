@@ -1,5 +1,6 @@
 package pl.jsildatk.analyzer.service;
 
+import com.google.common.base.Stopwatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -13,6 +14,7 @@ import pl.jsildatk.analyzer.validator.TelemetryFileValidator;
 
 import java.io.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class TelemetryServiceImpl implements TelemetryService {
     @Override
     public TelemetryDTO createTelemetry(MultipartFile telemetry) throws IOException {
         log.info("Creating telemetry for file: {}", telemetry.getOriginalFilename());
+        final Stopwatch sw = Stopwatch.createStarted();
         TelemetryFileValidator.validateFile(telemetry);
         
         final byte[] content = createTelemetryContent(telemetry);
@@ -33,6 +36,10 @@ public class TelemetryServiceImpl implements TelemetryService {
         inputStreamReader = new InputStreamReader(new ByteArrayInputStream(content));
         
         final List<List<TelemetryData>> telemetryData = telemetryParser.parseTelemetryData(inputStreamReader);
+        
+        final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
+        log.info("Time elapsed: {} milliseconds", timeElapsed);
+        
         return new TelemetryDTO(telemetryData, telemetryInfo);
     }
     
