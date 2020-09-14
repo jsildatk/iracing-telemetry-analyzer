@@ -19,6 +19,14 @@ public interface TelemetryParser {
      */
     TelemetryInfo parseTelemetryInfo(InputStreamReader inputStreamReader) throws IOException;
     
+    /**
+     * Parse rest of telemetry file to Telemetry
+     *
+     * @param inputStreamReader reader with data from telemetry file
+     * @return list of lists of telemetry data objects
+     * @throws IOException if file was not found
+     * @since 1.0.0
+     */
     List<List<TelemetryData>> parseTelemetryData(InputStreamReader inputStreamReader) throws IOException;
     
 }

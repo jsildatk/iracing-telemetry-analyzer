@@ -34,7 +34,7 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     }
     
     private Map<Type, Unit> createDataFromCsv() {
-        Map<Type, Unit> data = new HashMap<>();
+        final Map<Type, Unit> data = new HashMap<>();
         try {
             final CSVReader csvReader = new CSVReader(new FileReader(MAPPING_DATA_PATH));
             for ( String[] line : csvReader.readAll() ) {
