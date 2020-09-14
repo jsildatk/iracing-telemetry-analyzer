@@ -1,22 +1,24 @@
 package pl.jsildatk.analyzer.parser;
 
-import com.opencsv.exceptions.CsvValidationException;
-import org.springframework.web.multipart.MultipartFile;
+import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
 public interface TelemetryParser {
     
     /**
      * Parse first 8 lines of telemetry files to TelemetryInfo object
      *
-     * @param telemetry file with telemetry data
+     * @param inputStreamReader reader with data from telemetry file
      * @return TelemetryInfo object
-     * @throws IOException            if file was not found
-     * @throws CsvValidationException if csv is in invalid format
+     * @throws IOException if file was not found
      * @since 1.0.0
      */
-    TelemetryInfo parseTelemetryInfo(MultipartFile telemetry) throws IOException, CsvValidationException;
+    TelemetryInfo parseTelemetryInfo(InputStreamReader inputStreamReader) throws IOException;
+    
+    List<List<TelemetryData>> parseTelemetryData(InputStreamReader inputStreamReader) throws IOException;
     
 }

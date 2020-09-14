@@ -2,10 +2,12 @@ package pl.jsildatk.analyzer.dto;
 
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 public class TelemetryDTO {
     
-    Telemetry telemetry;
+    List<List<TelemetryData>> telemetryData;
     
     TelemetryInfo telemetryInfo;
     
