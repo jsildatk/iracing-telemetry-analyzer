@@ -29,7 +29,7 @@ public class TelemetryDataParserImplTest {
     @BeforeEach
     public void setUp() {
         TelemetryDataResolver telemetryDataResolver = mock(TelemetryDataResolver.class);
-        when(telemetryDataResolver.resolve(Mockito.any(String[].class))).thenReturn(
+        when(telemetryDataResolver.resolve(Mockito.anyMap(), Mockito.any(String[].class))).thenReturn(
                 Collections.singletonList(new TelemetryData(Type.AirDensity, Unit.BAR, 2.3)));
         telemetryParser = new TelemetryParserImpl(telemetryDataResolver);
     }

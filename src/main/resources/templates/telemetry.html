@@ -15,14 +15,18 @@
 	<script th:inline="javascript">
 		const title = [[${title}]];
 		const subtitle = [[${subtitle}]];
-		const throttle = [[${Throttle}]];
-		const brake = [[${Brake}]];
-		const clutch = [[${Clutch}]];
-		const steeringAngle = [[${SteeringWheelAngle}]];
+		const laps = [[${laps}]];
 	</script>
 </head>
 <body>
 <figure class="highcharts-figure">
+	<div>
+		<label for="lap"></label>
+		<select id="lap">
+			<option disabled selected hidden value>Select lap</option>
+			<option th:each="lap,iter : ${laps}" th:value="${iter.index}" th:text="${lap.number}"></option>
+		</select>
+	</div>
 	<div id="mainChart"></div>
 </figure>
 </body>

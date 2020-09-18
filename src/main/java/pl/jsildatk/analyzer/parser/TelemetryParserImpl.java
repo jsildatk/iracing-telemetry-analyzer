@@ -1,5 +1,6 @@
 package pl.jsildatk.analyzer.parser;
 
+import com.google.common.collect.Lists;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -47,15 +49,19 @@ public class TelemetryParserImpl implements TelemetryParser {
     }
     
     @Override
-    public List<List<TelemetryData>> parseTelemetryData(InputStreamReader inputStreamReader) throws IOException {
+    public List<List<TelemetryData>> parseTelemetryData(InputStreamReader inputStreamReader) throws IOException, CsvValidationException {
         final CSVReader csvReader = new CSVReader(inputStreamReader);
-        csvReader.skip(TELEMETRY_INFO_LINES + 4);
-        final List<List<TelemetryData>> telemetryData = new ArrayList<>();
+        csvReader.skip(TELEMETRY_INFO_LINES + 1);
+        final String[] header = csvReader.readNext();
+        csvReader.skip(2);
+        
+        final Map<Integer, Type> indexToType = telemetryDataResolver.resolveHeader(header);
+        final List<List<TelemetryData>> telemetryData = Lists.newArrayList();
         
         String[] line;
         try {
             while ( (line = csvReader.readNext()) != null ) {
-                telemetryData.add(telemetryDataResolver.resolve(line));
+                telemetryData.add(telemetryDataResolver.resolve(indexToType, line));
             }
         } catch ( CsvValidationException e ) {
             log.warn(Arrays.toString(e.getStackTrace()));

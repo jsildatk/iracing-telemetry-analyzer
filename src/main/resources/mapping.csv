@@ -48,3 +48,4 @@ RPM, rpm
 Speed, m/s
 SteeringWheelAngle, rad
 Lap, int
+LapCurrentLapTime, s

@@ -1,7 +1,7 @@
 package pl.jsildatk.analyzer.parser;
 
 /**
- * Mapping units from CSV file
+ * Mapping units from CSV file. Containing only required units.
  *
  * @since 1.0.0
  */

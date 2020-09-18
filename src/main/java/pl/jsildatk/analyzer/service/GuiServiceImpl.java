@@ -8,7 +8,6 @@ import org.springframework.ui.ModelMap;
 import pl.jsildatk.analyzer.dto.TelemetryDTO;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
-import pl.jsildatk.analyzer.parser.Type;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class GuiServiceImpl implements GuiService {
         final Stopwatch sw = Stopwatch.createStarted();
         final ModelMap modelMap = new ModelMap();
         createTelemetryInfoModel(modelMap, telemetryDTO.getTelemetryInfo());
-        createTelemetryDataModel(modelMap, telemetryDTO.getTelemetryData());
+        createTelemetryLapModel(modelMap, telemetryDTO.getTelemetryData());
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
         log.info("Time elapsed for converting telemetry to model : {} milliseconds", timeElapsed);
@@ -38,10 +37,8 @@ public class GuiServiceImpl implements GuiService {
         modelMap.put("subtitle", createSubtitle(telemetryInfo));
     }
     
-    private void createTelemetryDataModel(ModelMap modelMap, List<List<TelemetryData>> telemetryData) {
-        for ( Type type : Type.values() ) {
-            modelMap.put(type.name(), telemetryDataResolver.getDataByType(telemetryData, type));
-        }
+    private void createTelemetryLapModel(ModelMap modelMap, List<List<TelemetryData>> telemetryData) {
+        modelMap.put("laps", telemetryDataResolver.getLapsData(telemetryData));
     }
     
     private String createTitle(TelemetryInfo telemetryInfo) {

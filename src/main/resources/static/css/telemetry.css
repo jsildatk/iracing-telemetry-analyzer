@@ -32,3 +32,17 @@
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
+
+#mainChart {
+    margin-top: 20px;
+}
+
+#lap {
+    font-size: larger;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid #000000;
+    background-color: #e3c118;
+    color: white;
+}

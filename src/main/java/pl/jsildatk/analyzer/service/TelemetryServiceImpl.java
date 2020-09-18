@@ -1,6 +1,7 @@
 package pl.jsildatk.analyzer.service;
 
 import com.google.common.base.Stopwatch;
+import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -24,7 +25,7 @@ public class TelemetryServiceImpl implements TelemetryService {
     private final TelemetryParser telemetryParser;
     
     @Override
-    public TelemetryDTO createTelemetry(MultipartFile telemetry) throws IOException {
+    public TelemetryDTO createTelemetry(MultipartFile telemetry) throws IOException, CsvValidationException {
         log.info("Creating telemetry for file: {}", telemetry.getOriginalFilename());
         final Stopwatch sw = Stopwatch.createStarted();
         TelemetryFileValidator.validateFile(telemetry);

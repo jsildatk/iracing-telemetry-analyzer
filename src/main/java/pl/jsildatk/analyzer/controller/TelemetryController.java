@@ -1,5 +1,6 @@
 package pl.jsildatk.analyzer.controller;
 
+import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,8 @@ public class TelemetryController {
     }
     
     @PostMapping("/analyze")
-    public String analyzeTelemetry(@RequestParam("telemetry") MultipartFile telemetry, Model model) throws IllegalArgumentException, IOException {
+    public String analyzeTelemetry(@RequestParam("telemetry") MultipartFile telemetry, Model model)
+            throws IllegalArgumentException, IOException, CsvValidationException {
         model.mergeAttributes(guiService.createModel(telemetryService.createTelemetry(telemetry)));
         return "telemetry";
     }
