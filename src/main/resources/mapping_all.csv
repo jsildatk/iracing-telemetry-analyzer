@@ -20,7 +20,7 @@ IsOnTrack, boolean
 FastRepairAvailable, boolean
 LRtempR, C
 DriverMarker, boolean
-Lap, boolean
+Lap, int
 dpFuelAddKg, kg
 LapBestNLapTime, s
 EngineWarnings, irsdk_EngineWarnings

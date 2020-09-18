@@ -47,3 +47,4 @@ FuelUsePerHour, kg/h
 RPM, rpm
 Speed, m/s
 SteeringWheelAngle, rad
+Lap, int

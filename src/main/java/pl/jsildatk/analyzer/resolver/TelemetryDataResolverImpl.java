@@ -33,6 +33,27 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         return data;
     }
     
+    @Override
+    public List<Double> getDataByType(List<List<TelemetryData>> data, Type type) {
+        final List<Double> result = new ArrayList<>();
+        for ( List<TelemetryData> datum : data ) {
+            for ( TelemetryData telemetryData : datum ) {
+                final Type telemetryDataType = telemetryData.getType();
+                if ( telemetryDataType == type ) {
+                    if ( telemetryDataType == Type.Clutch ) { // clutch is reversed for some reason
+                        result.add(100.0 - telemetryData.getValue());
+                    } else if ( telemetryDataType == Type.SteeringWheelAngle ) { // convert to degree
+                        result.add(57.2957795 * telemetryData.getValue());
+                    } else {
+                        result.add(telemetryData.getValue());
+                    }
+                }
+            }
+        }
+        log.debug("Created data for type: {}", type);
+        return result;
+    }
+    
     private Map<Type, Unit> createDataFromCsv() {
         final Map<Type, Unit> data = new HashMap<>();
         try {

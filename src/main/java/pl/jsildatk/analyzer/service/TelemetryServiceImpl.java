@@ -38,7 +38,7 @@ public class TelemetryServiceImpl implements TelemetryService {
         final List<List<TelemetryData>> telemetryData = telemetryParser.parseTelemetryData(inputStreamReader);
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
-        log.info("Time elapsed: {} milliseconds", timeElapsed);
+        log.info("Time elapsed for parsing telemetry from CSV file : {} milliseconds", timeElapsed);
         
         return new TelemetryDTO(telemetryData, telemetryInfo);
     }

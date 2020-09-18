@@ -42,7 +42,7 @@ public class TelemetryParserImpl implements TelemetryParser {
         final TelemetryInfo telemetryInfo =
                 new TelemetryInfo(lines.get(0)[1], lines.get(1)[1], lines.get(2)[1], lines.get(3)[1], lines.get(4)[1], lines.get(5)[1],
                         createSampleRate(lines.get(6)), createSessionTime(lines.get(7)));
-        log.info("Telemetry info: {}", telemetryInfo);
+        log.info("Parsed telemetry info: {}", telemetryInfo);
         return telemetryInfo;
     }
     
@@ -63,12 +63,12 @@ public class TelemetryParserImpl implements TelemetryParser {
             csvReader.close();
         }
         
-        log.info("Telemetry data size: {}", telemetryData.size());
+        log.info("Parsed telemetry data - size: {}", telemetryData.size());
         return telemetryData;
     }
     
     private String createSessionTime(String[] line) {
-        return Math.round(Double.parseDouble(line[1]) / 3600 * 100.0) / 100.0 + " h";
+        return Math.round(Double.parseDouble(line[1]) / 60 * 100.0) / 100.0 + " min";
     }
     
     private String createSampleRate(String[] line) {
