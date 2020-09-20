@@ -118,7 +118,7 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     }
     
     private double getLapTime(List<SingleTypeData> data) {
-        final List<Double> value = getValuesByType(data, Type.Lap);
+        final List<Double> value = getValuesByType(data, Type.LapCurrentLapTime);
         return value.get(value.size() - 1);
     }
     

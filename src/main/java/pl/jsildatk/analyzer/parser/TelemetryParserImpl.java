@@ -73,7 +73,22 @@ public class TelemetryParserImpl implements TelemetryParser {
     }
     
     private String createSessionTime(String[] line) {
-        return Math.round(Double.parseDouble(line[1]) / 60 * 100.0) / 100.0 + " min";
+        final double time = Double.parseDouble(line[1]);
+        final int hours = (int) Math.floor(time / 3600);
+        final int minutes = (int) Math.floor((time % 3600) / 60);
+        final int seconds = (int) Math.floor(time % 60);
+        
+        final StringBuilder result = new StringBuilder();
+        if ( hours > 0 ) {
+            result.append(hours)
+                    .append(":")
+                    .append((minutes < 10 ? "0" : ""));
+        }
+        result.append(minutes)
+                .append(":")
+                .append((seconds < 10 ? "0" : ""));
+        result.append(seconds);
+        return result.toString();
     }
     
     private String createSampleRate(String[] line) {

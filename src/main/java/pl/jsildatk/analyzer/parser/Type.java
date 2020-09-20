@@ -46,7 +46,7 @@ public enum Type {
 //    RRpressure("Right rear pressure (kPa)"),
 //    LapDeltaToBestLap("Delta to best lap (s)"),
 //    LapBestLapTime("Best lap time (m)"),
-//    LapCurrentLapTime("Current lap time (S)"),
+    LapCurrentLapTime("Current lap time (S)"),
     Lap("Lap number (int)"),
     //    LapDist("Lap distance (m)"),
     Clutch("Clutch force (%)"),

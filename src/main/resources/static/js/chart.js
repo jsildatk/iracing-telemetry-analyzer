@@ -3,6 +3,17 @@ $(() => {
 		return lap.data.find(singleData => singleData.type === type);
 	}
 
+	function resolveLapTime(lapTime) {
+		let result = '';
+		const minutes = Math.floor(lapTime / 60);
+		const seconds = (lapTime - minutes * 60).toFixed(3);
+		result +=
+			'' + minutes + ":" + (seconds < 10 ? '0' : '');
+		result +=
+			'' + seconds;
+		return result;
+	}
+
 	const select = $('#lap');
 	$(select).on('change', function () {
 		const lap = laps[select.val()];
@@ -15,7 +26,7 @@ $(() => {
 
 		Highcharts.chart('mainChart', {
 			title: {
-				text: title + ' (' + lap.lapTime + ') '
+				text: title + ' (' + resolveLapTime(lap.lapTime) + ') '
 			},
 
 			subtitle: {

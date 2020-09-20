@@ -69,11 +69,12 @@ public class TelemetryDataResolverImplTest {
         final TelemetryData steeringAngleData = new TelemetryData(Type.SteeringWheelAngle, -123);
         final TelemetryData steeringAngleData1 = new TelemetryData(Type.SteeringWheelAngle, 123);
         final TelemetryData lapData = new TelemetryData(Type.Lap, 1);
+        final TelemetryData lapTimeData = new TelemetryData(Type.LapCurrentLapTime, 23.23);
         
         // when
         final List<TelemetryLap> result = telemetryDataResolver.getLapsData(
                 createTelemetryData(brakeData1, brakeData2, clutchData, throttleData, gearData, gearData1, rpmData, rpmData1, steeringAngleData,
-                        steeringAngleData1, lapData));
+                        steeringAngleData1, lapData, lapTimeData));
         final TelemetryLap resultLap = result.get(0);
         final List<SingleTypeData> resultLapData = resultLap.getData();
         
@@ -81,7 +82,7 @@ public class TelemetryDataResolverImplTest {
         assertThat(result, hasSize(1));
         
         assertThat(resultLap.getNumber(), is((int) lapData.getValue()));
-        assertThat(resultLap.getLapTime(), is(1.0));
+        assertThat(resultLap.getLapTime(), is(lapTimeData.getValue()));
         assertThat(resultLap.getMinGear(), is((int) gearData.getValue()));
         assertThat(resultLap.getMaxGear(), is((int) gearData1.getValue()));
         assertThat(resultLap.getMinRpm(), is(rpmData.getValue()));
