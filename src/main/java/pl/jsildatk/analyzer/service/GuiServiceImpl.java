@@ -28,7 +28,7 @@ public class GuiServiceImpl implements GuiService {
         createTelemetryLapModel(modelMap, telemetryDTO.getTelemetryData());
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
-        log.info("Time elapsed for converting telemetry to model : {} milliseconds", timeElapsed);
+        log.info("Time elapsed for converting telemetry to model: {} milliseconds", timeElapsed);
         return modelMap;
     }
     

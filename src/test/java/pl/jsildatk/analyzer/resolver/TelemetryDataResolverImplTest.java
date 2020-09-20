@@ -6,10 +6,10 @@ import com.opencsv.CSVReader;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
 import pl.jsildatk.analyzer.parser.Type;
-import pl.jsildatk.analyzer.parser.Unit;
 
 import java.io.FileReader;
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 
 public class TelemetryDataResolverImplTest {
     
@@ -28,11 +28,6 @@ public class TelemetryDataResolverImplTest {
     @BeforeEach
     public void setUp() {
         telemetryDataResolver = new TelemetryDataResolverImpl();
-    }
-    
-    @Test
-    public void testMapping() {
-        assertThat(telemetryDataResolver.getMapping(), aMapWithSize(51));
     }
     
     @Test
@@ -63,15 +58,46 @@ public class TelemetryDataResolverImplTest {
     @Test
     public void testResolvingLapsData() {
         // given
-        final TelemetryData brakeData1 = new TelemetryData(Type.Brake, Unit.PERCENT, 0.0);
-        final TelemetryData brakeData2 = new TelemetryData(Type.Brake, Unit.PERCENT, 1.0);
-        final TelemetryData clutchData = new TelemetryData(Type.Clutch, Unit.PERCENT, 34.2);
+        final TelemetryData brakeData1 = new TelemetryData(Type.Brake, 0.0);
+        final TelemetryData brakeData2 = new TelemetryData(Type.Brake, 1.0);
+        final TelemetryData clutchData = new TelemetryData(Type.Clutch, 34.2);
+        final TelemetryData throttleData = new TelemetryData(Type.Throttle, 12.2);
+        final TelemetryData gearData = new TelemetryData(Type.Gear, 1);
+        final TelemetryData gearData1 = new TelemetryData(Type.Gear, 5);
+        final TelemetryData rpmData = new TelemetryData(Type.RPM, 2323.12);
+        final TelemetryData rpmData1 = new TelemetryData(Type.RPM, 6455.12);
+        final TelemetryData steeringAngleData = new TelemetryData(Type.SteeringWheelAngle, -123);
+        final TelemetryData steeringAngleData1 = new TelemetryData(Type.SteeringWheelAngle, 123);
+        final TelemetryData lapData = new TelemetryData(Type.Lap, 1);
         
         // when
-        final List<TelemetryLap> result = telemetryDataResolver.getLapsData(createTelemetryData(brakeData1, brakeData2, clutchData));
+        final List<TelemetryLap> result = telemetryDataResolver.getLapsData(
+                createTelemetryData(brakeData1, brakeData2, clutchData, throttleData, gearData, gearData1, rpmData, rpmData1, steeringAngleData,
+                        steeringAngleData1, lapData));
+        final TelemetryLap resultLap = result.get(0);
+        final List<SingleTypeData> resultLapData = resultLap.getData();
         
         // then
-        assertThat(result, is(notNullValue()));
+        assertThat(result, hasSize(1));
+        
+        assertThat(resultLap.getNumber(), is((int) lapData.getValue()));
+        assertThat(resultLap.getLapTime(), is(1.0));
+        assertThat(resultLap.getMinGear(), is((int) gearData.getValue()));
+        assertThat(resultLap.getMaxGear(), is((int) gearData1.getValue()));
+        assertThat(resultLap.getMinRpm(), is(rpmData.getValue()));
+        assertThat(resultLap.getMaxRpm(), is(rpmData1.getValue()));
+        assertThat(resultLap.getMinSteeringAngle(), is(Math.toDegrees(steeringAngleData.getValue())));
+        assertThat(resultLap.getMaxSteeringAngle(), is(Math.toDegrees(steeringAngleData1.getValue())));
+        
+        assertThat(resultLapData, hasSize(Type.values().length));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Brake), contains(brakeData1.getValue(), brakeData2.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Clutch), contains(100.0 - clutchData.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Throttle), contains(throttleData.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Gear), contains(gearData.getValue(), gearData1.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.RPM), contains(rpmData.getValue(), rpmData1.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.SteeringWheelAngle),
+                contains(Math.toDegrees(steeringAngleData.getValue()), Math.toDegrees(steeringAngleData1.getValue())));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Lap), contains(lapData.getValue()));
     }
     
     private Map<Integer, Type> createIntegerToTypeMapping() {

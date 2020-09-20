@@ -30,7 +30,7 @@ public class TelemetryDataParserImplTest {
     public void setUp() {
         TelemetryDataResolver telemetryDataResolver = mock(TelemetryDataResolver.class);
         when(telemetryDataResolver.resolve(Mockito.anyMap(), Mockito.any(String[].class))).thenReturn(
-                Collections.singletonList(new TelemetryData(Type.Lap, Unit.BAR, 2.3)));
+                Collections.singletonList(new TelemetryData(Type.RPM, 2.3)));
         telemetryParser = new TelemetryParserImpl(telemetryDataResolver);
     }
     

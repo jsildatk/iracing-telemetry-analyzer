@@ -11,8 +11,7 @@ public interface TelemetryDataResolver {
     
     /**
      * Resolve header from CSV file in order to get all required columns to create valid telemetry data.
-     * It creates map with Integer as key and {@link Type} as value. Such mapping is needed for properly resolving only required types from mapping.csv file
-     * which does not contain all types like mapping_all.csv.
+     * It creates map with Integer as key and {@link Type} as value.
      *
      * @param header from CSV file (it is not the same for all the vehicles)
      * @return mapping for pair {index, {@link Type}} as map
@@ -25,7 +24,7 @@ public interface TelemetryDataResolver {
      * {@link TelemetryData}
      *
      * @param line from csv file
-     * @return list of telemetry data containing {@link Type}, {@link pl.jsildatk.analyzer.parser.Unit} and value as double
+     * @return list of telemetry data containing {@link Type} and value as double
      * @since 1.0.0
      */
     List<TelemetryData> resolve(Map<Integer, Type> indexToType, String[] line);

@@ -5,18 +5,13 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
 import pl.jsildatk.analyzer.parser.Type;
-import pl.jsildatk.analyzer.parser.Unit;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -24,12 +19,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     
-    private static final String MAPPING_DATA_PATH = "src/main/resources/mapping.csv";
-    
-    private final Map<Type, Unit> mapping = createMappingFromCsv();
-    
     @Override
     public Map<Integer, Type> resolveHeader(String[] header) {
+        final Stopwatch sw = Stopwatch.createStarted();
         final Map<Integer, Type> indexToType = Maps.newHashMap();
         for ( Type type : Type.values() ) {
             for ( int i = 0; i < header.length; i++ ) {
@@ -40,6 +32,9 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
                 }
             }
         }
+        
+        final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
+        log.info("Time elapsed for resolving CSV header: {} milliseconds", timeElapsed);
         return indexToType;
     }
     
@@ -49,7 +44,7 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         for ( int i = 0; i < line.length; i++ ) {
             if ( indexToType.containsKey(i) ) {
                 final Type type = indexToType.get(i);
-                data.add(new TelemetryData(type, mapping.get(type), Double.parseDouble(line[i])));
+                data.add(new TelemetryData(type, Double.parseDouble(line[i])));
             }
         }
         return data;
@@ -123,74 +118,40 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     }
     
     private double getLapTime(List<SingleTypeData> data) {
-        final List<Double> value = data.get(39)
-                .getValue();
+        final List<Double> value = getValuesByType(data, Type.Lap);
         return value.get(value.size() - 1);
     }
     
     private double[] getMinAndMaxSteeringWheelAngle(List<SingleTypeData> data) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        for ( Double value : data.get(50)
-                .getValue() ) {
-            if ( value > max ) {
-                max = value;
-            } else if ( value < min ) {
-                min = value;
-            }
-        }
-        
-        return new double[]{ min, max };
+        return getMinAndMaxForDoubleType(data, Type.SteeringWheelAngle);
     }
     
     private int[] getMinAndMaxGear(List<SingleTypeData> data) {
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for ( Double value : data.get(45)
-                .getValue() ) {
-            final int intValue = value.intValue();
-            if ( intValue > max ) {
-                max = intValue;
-            } else if ( intValue < min ) {
-                min = intValue;
-            }
-        }
-        
-        return new int[]{ min, max };
+        final IntSummaryStatistics summaryStatistics = getValuesByType(data, Type.Gear).stream()
+                .mapToInt(Double::intValue)
+                .summaryStatistics();
+        return new int[]{ summaryStatistics.getMin(), summaryStatistics.getMax() };
     }
     
     private double[] getMinAndMaxRpm(List<SingleTypeData> data) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        for ( Double value : data.get(48)
-                .getValue() ) {
-            if ( value > max ) {
-                max = value;
-            } else if ( value < min ) {
-                min = value;
-            }
-        }
-        
-        return new double[]{ min, max };
+        return getMinAndMaxForDoubleType(data, Type.RPM);
     }
     
-    private Map<Type, Unit> createMappingFromCsv() {
-        final Map<Type, Unit> data = Maps.newHashMap();
-        try {
-            final CSVReader csvReader = new CSVReader(new FileReader(MAPPING_DATA_PATH));
-            for ( String[] line : csvReader.readAll() ) {
-                data.put(Type.valueOf(line[0]), Unit.resolveByLabel(line[1].trim()));
-            }
-        } catch ( IOException | CsvException e ) {
-            log.warn(Arrays.toString(e.getStackTrace()));
-        }
-        
-        return data;
+    private double[] getMinAndMaxForDoubleType(List<SingleTypeData> data, Type type) {
+        final DoubleSummaryStatistics summaryStatistics = getValuesByType(data, type).stream()
+                .mapToDouble(value -> value)
+                .summaryStatistics();
+        return new double[]{ summaryStatistics.getMin(), summaryStatistics.getMax() };
     }
     
     @VisibleForTesting
-    Map<Type, Unit> getMapping() {
-        return mapping;
+    List<Double> getValuesByType(List<SingleTypeData> data, Type type) {
+        for ( SingleTypeData singleTypeData : data ) {
+            if ( singleTypeData.getType() == type ) {
+                return singleTypeData.getValue();
+            }
+        }
+        throw new IllegalArgumentException(String.format("Data for type: %s was not found", type));
     }
     
 }

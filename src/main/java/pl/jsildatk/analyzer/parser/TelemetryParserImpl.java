@@ -12,7 +12,6 @@ import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class TelemetryParserImpl implements TelemetryParser {
     @Override
     public TelemetryInfo parseTelemetryInfo(InputStreamReader inputStreamReader) throws IOException {
         final CSVReader csvReader = new CSVReader(inputStreamReader);
-        final List<String[]> lines = new ArrayList<>(8);
+        final List<String[]> lines = Lists.newArrayListWithCapacity(8);
         
         try {
             for ( int i = 0; i < TELEMETRY_INFO_LINES; i++ ) {

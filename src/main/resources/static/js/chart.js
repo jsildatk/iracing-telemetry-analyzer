@@ -1,13 +1,17 @@
 $(() => {
+	function getDataByType(lap, type) {
+		return lap.data.find(singleData => singleData.type === type);
+	}
+
 	const select = $('#lap');
 	$(select).on('change', function () {
 		const lap = laps[select.val()];
-		const throttle = lap.data[44].value;
-		const brake = lap.data[43].value;
-		const clutch = lap.data[42].value;
-		const rpm = lap.data[48].value;
-		const gear = lap.data[45].value;
-		const angle = lap.data[50].value;
+		const throttle = getDataByType(lap, "Throttle").value;
+		const brake = getDataByType(lap, "Brake").value;
+		const clutch = getDataByType(lap, "Clutch").value;
+		const rpm = getDataByType(lap, "RPM").value;
+		const gear = getDataByType(lap, "Gear").value;
+		const angle = getDataByType(lap, "SteeringWheelAngle").value;
 
 		Highcharts.chart('mainChart', {
 			title: {
