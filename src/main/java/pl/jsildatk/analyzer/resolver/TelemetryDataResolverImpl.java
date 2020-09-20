@@ -62,7 +62,11 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         final List<TelemetryLap> result = Lists.newArrayList();
         for ( Integer lap : laps ) {
             final List<SingleTypeData> dataByLap = getDataByLap(data, lap);
-            result.add(new TelemetryLap(lap, getLapTime(dataByLap), dataByLap));
+            final double[] rpm = getMinAndMaxRpm(dataByLap);
+            final int[] gear = getMinAndMaxGear(dataByLap);
+            final double[] steeringWheelAngle = getMinAndMaxSteeringWheelAngle(dataByLap);
+            result.add(new TelemetryLap(lap, getLapTime(dataByLap), gear[0], gear[1], rpm[0], rpm[1], steeringWheelAngle[0], steeringWheelAngle[1],
+                    dataByLap));
         }
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
@@ -107,7 +111,7 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
                     if ( telemetryDataType == Type.Clutch ) { // clutch's value is reversed for some reason
                         result.add(100.0 - telemetryData.getValue());
                     } else if ( telemetryDataType == Type.SteeringWheelAngle ) { // convert steering wheel angle from radians to degree
-                        result.add(Math.toRadians(telemetryData.getValue()));
+                        result.add(Math.toDegrees(telemetryData.getValue()));
                     } else {
                         result.add(telemetryData.getValue());
                     }
@@ -122,6 +126,52 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         final List<Double> value = data.get(39)
                 .getValue();
         return value.get(value.size() - 1);
+    }
+    
+    private double[] getMinAndMaxSteeringWheelAngle(List<SingleTypeData> data) {
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        for ( Double value : data.get(50)
+                .getValue() ) {
+            if ( value > max ) {
+                max = value;
+            } else if ( value < min ) {
+                min = value;
+            }
+        }
+        
+        return new double[]{ min, max };
+    }
+    
+    private int[] getMinAndMaxGear(List<SingleTypeData> data) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for ( Double value : data.get(45)
+                .getValue() ) {
+            final int intValue = value.intValue();
+            if ( intValue > max ) {
+                max = intValue;
+            } else if ( intValue < min ) {
+                min = intValue;
+            }
+        }
+        
+        return new int[]{ min, max };
+    }
+    
+    private double[] getMinAndMaxRpm(List<SingleTypeData> data) {
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        for ( Double value : data.get(48)
+                .getValue() ) {
+            if ( value > max ) {
+                max = value;
+            } else if ( value < min ) {
+                min = value;
+            }
+        }
+        
+        return new double[]{ min, max };
     }
     
     private Map<Type, Unit> createMappingFromCsv() {
