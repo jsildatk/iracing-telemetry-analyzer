@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Immutable class representing single lap from telemetry (created from thousands of ticks). Contains:
  * 1) number of lap
- * 2) lap time
+ * 2) lap time as formatted string
  * 3) minimum {@link pl.jsildatk.analyzer.parser.Type.Gear} value
  * 4) maximum {@link pl.jsildatk.analyzer.parser.Type.Gear} value
  * 5) minimum {@link pl.jsildatk.analyzer.parser.Type.RPM} value
@@ -23,7 +23,7 @@ public class TelemetryLap {
     
     int number;
     
-    double lapTime;
+    String lapTime;
     
     int minGear;
     

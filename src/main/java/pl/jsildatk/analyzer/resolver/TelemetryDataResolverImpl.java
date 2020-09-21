@@ -11,6 +11,7 @@ import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
 import pl.jsildatk.analyzer.parser.Type;
+import pl.jsildatk.analyzer.util.TimeUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -117,9 +118,10 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         return result;
     }
     
-    private double getLapTime(List<SingleTypeData> data) {
+    private String getLapTime(List<SingleTypeData> data) {
         final List<Double> value = getValuesByType(data, Type.LapCurrentLapTime);
-        return value.get(value.size() - 1);
+        final double lapTime = value.get(value.size() - 1);
+        return TimeUtils.formatLapTime(lapTime);
     }
     
     private double[] getMinAndMaxSteeringWheelAngle(List<SingleTypeData> data) {

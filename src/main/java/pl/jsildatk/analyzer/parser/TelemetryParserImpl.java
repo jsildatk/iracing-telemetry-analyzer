@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
+import pl.jsildatk.analyzer.util.TimeUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -73,22 +74,7 @@ public class TelemetryParserImpl implements TelemetryParser {
     }
     
     private String createSessionTime(String[] line) {
-        final double time = Double.parseDouble(line[1]);
-        final int hours = (int) Math.floor(time / 3600);
-        final int minutes = (int) Math.floor((time % 3600) / 60);
-        final int seconds = (int) Math.floor(time % 60);
-        
-        final StringBuilder result = new StringBuilder();
-        if ( hours > 0 ) {
-            result.append(hours)
-                    .append(":")
-                    .append((minutes < 10 ? "0" : ""));
-        }
-        result.append(minutes)
-                .append(":")
-                .append((seconds < 10 ? "0" : ""));
-        result.append(seconds);
-        return result.toString();
+        return TimeUtils.formatSessionTime(Double.parseDouble(line[1]));
     }
     
     private String createSampleRate(String[] line) {

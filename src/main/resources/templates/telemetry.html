@@ -24,7 +24,8 @@
 		<label for="lap"></label>
 		<select id="lap">
 			<option disabled selected hidden value>Select lap</option>
-			<option th:each="lap,iter : ${laps}" th:value="${iter.index}" th:text="${lap.number}"></option>
+			<option th:each="lap,iter : ${laps}" th:value="${iter.index}"
+					th:text="${lap.number + ' (' + lap.lapTime + ') '}"></option>
 		</select>
 	</div>
 	<div id="mainChart"></div>
