@@ -15,10 +15,13 @@ import pl.jsildatk.analyzer.util.TimeUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleFunction;
 
 @Component
 @Slf4j
 public class TelemetryDataResolverImpl implements TelemetryDataResolver {
+    
+    private static final DoubleFunction<Double> METERS_TO_KILOMETERS = meters -> meters * 3600 / 1000;
     
     @Override
     public Map<Integer, Type> resolveHeader(String[] header) {
@@ -61,8 +64,9 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
             final double[] rpm = getMinAndMaxRpm(dataByLap);
             final int[] gear = getMinAndMaxGear(dataByLap);
             final double[] steeringWheelAngle = getMinAndMaxSteeringWheelAngle(dataByLap);
+            final double[] speed = getMinAndMaxSpeed(dataByLap);
             result.add(new TelemetryLap(lap, getLapTime(dataByLap), gear[0], gear[1], rpm[0], rpm[1], steeringWheelAngle[0], steeringWheelAngle[1],
-                    dataByLap));
+                    speed[0], speed[1], dataByLap));
         }
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
@@ -108,6 +112,8 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
                         result.add(100.0 - telemetryData.getValue());
                     } else if ( telemetryDataType == Type.SteeringWheelAngle ) { // convert steering wheel angle from radians to degree
                         result.add(Math.toDegrees(telemetryData.getValue()));
+                    } else if ( telemetryDataType == Type.Speed ) { // convert speed to km/h from m/s
+                        result.add(METERS_TO_KILOMETERS.apply(telemetryData.getValue()));
                     } else {
                         result.add(telemetryData.getValue());
                     }
@@ -137,6 +143,10 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     
     private double[] getMinAndMaxRpm(List<SingleTypeData> data) {
         return getMinAndMaxForDoubleType(data, Type.RPM);
+    }
+    
+    private double[] getMinAndMaxSpeed(List<SingleTypeData> data) {
+        return getMinAndMaxForDoubleType(data, Type.Speed);
     }
     
     private double[] getMinAndMaxForDoubleType(List<SingleTypeData> data, Type type) {

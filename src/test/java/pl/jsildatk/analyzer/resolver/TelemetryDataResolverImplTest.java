@@ -71,11 +71,13 @@ public class TelemetryDataResolverImplTest {
         final TelemetryData steeringAngleData1 = new TelemetryData(Type.SteeringWheelAngle, 123);
         final TelemetryData lapData = new TelemetryData(Type.Lap, 1);
         final TelemetryData lapTimeData = new TelemetryData(Type.LapCurrentLapTime, 23.23);
+        final TelemetryData speedData1 = new TelemetryData(Type.Speed, 30);
+        final TelemetryData speedData2 = new TelemetryData(Type.Speed, 56.44);
         
         // when
         final List<TelemetryLap> result = telemetryDataResolver.getLapsData(
                 createTelemetryData(brakeData1, brakeData2, clutchData, throttleData, gearData, gearData1, rpmData, rpmData1, steeringAngleData,
-                        steeringAngleData1, lapData, lapTimeData));
+                        steeringAngleData1, lapData, lapTimeData, speedData1, speedData2));
         final TelemetryLap resultLap = result.get(0);
         final List<SingleTypeData> resultLapData = resultLap.getData();
         
@@ -90,6 +92,8 @@ public class TelemetryDataResolverImplTest {
         assertThat(resultLap.getMaxRpm(), is(rpmData1.getValue()));
         assertThat(resultLap.getMinSteeringAngle(), is(Math.toDegrees(steeringAngleData.getValue())));
         assertThat(resultLap.getMaxSteeringAngle(), is(Math.toDegrees(steeringAngleData1.getValue())));
+        assertThat(resultLap.getMinSpeed(), is(108.0));
+        assertThat(resultLap.getMaxSpeed(), is(203.184));
         
         assertThat(resultLapData, hasSize(Type.values().length));
         assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Brake), contains(brakeData1.getValue(), brakeData2.getValue()));
@@ -100,6 +104,7 @@ public class TelemetryDataResolverImplTest {
         assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.SteeringWheelAngle),
                 contains(Math.toDegrees(steeringAngleData.getValue()), Math.toDegrees(steeringAngleData1.getValue())));
         assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Lap), contains(lapData.getValue()));
+        assertThat(telemetryDataResolver.getValuesByType(resultLapData, Type.Speed), contains(108.0, 203.184));
     }
     
     private Map<Integer, Type> createIntegerToTypeMapping() {

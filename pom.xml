@@ -15,7 +15,7 @@
 	<description>Iracing telemetry analyzer</description>
 
 	<properties>
-		<java.version>14</java.version>
+		<java.version>8</java.version>
 		<mockito-core.version>3.5.10</mockito-core.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
 		<slf4j-api.version>1.7.30</slf4j-api.version>

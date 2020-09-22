@@ -29,7 +29,7 @@ public class GuiServiceImplTest {
         guiService = new GuiServiceImpl(telemetryDataResolver);
         when(telemetryDataResolver.getLapsData(Mockito.any())).thenReturn(
                 ImmutableList.of(new TelemetryLap(1, "1", 1, 5, 100, 200, -100, 100,
-                        ImmutableList.of(new SingleTypeData(Type.Gear, ImmutableList.of(2.0, 3.0))))));
+                        10, 20, ImmutableList.of(new SingleTypeData(Type.Gear, ImmutableList.of(2.0, 3.0))))));
     }
     
     @Test

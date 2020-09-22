@@ -12,6 +12,7 @@ $(() => {
 		const rpm = getDataByType(lap, "RPM").value;
 		const gear = getDataByType(lap, "Gear").value;
 		const angle = getDataByType(lap, "SteeringWheelAngle").value;
+		const speed = getDataByType(lap, "Speed").value;
 
 		Highcharts.chart('mainChart', {
 			title: {

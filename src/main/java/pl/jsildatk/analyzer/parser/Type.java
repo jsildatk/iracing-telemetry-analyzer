@@ -56,7 +56,7 @@ public enum Type {
     //    FuelLevel("Actual fuel level (l)"),
 //    FuelUsePerHour("Fuel use per hour (kg/h)"),
     RPM("Rounds per minute"),
-    //    Speed("Actual speed (km/h)"),
+    Speed("Actual speed (km/h)"),
     SteeringWheelAngle("Actual steering wheel angle (radians)");
     
     private final String description;
