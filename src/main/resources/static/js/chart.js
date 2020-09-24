@@ -1,18 +1,81 @@
 $(() => {
+
 	function getDataByType(lap, type) {
 		return lap.data.find(singleData => singleData.type === type);
 	}
 
+	function checkColumn(columns, toCheck) {
+		return columns.find(column => column === toCheck);
+	}
+
+	function getSelectedColumns() {
+		let selectedColumns = [];
+		$('#columns input:checked').each(function () {
+			selectedColumns.push($(this).attr('id'));
+		});
+		return selectedColumns;
+	}
+
+	function resolveMinAndMax(lap, type) {
+		switch ( type ) {
+			case 'RPM':
+				return [lap.minRpm, lap.maxRpm];
+			case 'SteeringWheelAngle':
+				return [lap.minSteeringAngle, lap.maxSteeringAngle];
+			case 'Gear':
+				return [lap.minGear, lap.maxGear];
+			case 'Speed':
+				return [lap.minSpeed, lap.maxSpeed];
+			default :
+				return null;
+		}
+	}
+
+	/********************************************************************************/
+
 	const select = $('#lap');
 	$(select).on('change', function () {
+		const columns = getSelectedColumns();
+		if ( columns.length === 0 ) {
+			alert('You must select at least 1 column');
+			return;
+		}
+
 		const lap = laps[select.val()];
-		const throttle = getDataByType(lap, "Throttle").value;
-		const brake = getDataByType(lap, "Brake").value;
-		const clutch = getDataByType(lap, "Clutch").value;
-		const rpm = getDataByType(lap, "RPM").value;
-		const gear = getDataByType(lap, "Gear").value;
-		const angle = getDataByType(lap, "SteeringWheelAngle").value;
-		const speed = getDataByType(lap, "Speed").value;
+		let toDraw = [];
+		let index = 0;
+		for ( let i = 0; i < columns.length; i++ ) {
+			if ( columns[i] !== 'Inputs' ) {
+				toDraw[index] = getDataByType(lap, columns[i]);
+				index++;
+			}
+		}
+		let yAxisLength = index;
+		if ( checkColumn(columns, 'Inputs') ) {
+			yAxisLength++;
+			toDraw[index] = getDataByType(lap, 'Throttle');
+			toDraw[index + 1] = getDataByType(lap, 'Brake');
+			toDraw[index + 2] = getDataByType(lap, 'Clutch');
+		}
+
+		let series = [];
+		for ( let i = 0; i < toDraw.length; i++ ) {
+			series.push(setSeriesData(toDraw[i], i));
+		}
+
+		let yAxis = [];
+		const height = (100 / yAxisLength) - 1.5;
+		let top = 0;
+		for ( let i = 0; i < yAxisLength; i++ ) {
+			if ( toDraw[i].type === 'Throttle' ) {
+				yAxis.push(setYAxisInputsData(top, height));
+				break;
+			} else {
+				const minAndMax = resolveMinAndMax(lap, toDraw[i].type);
+				yAxis.push(setYAxisData(toDraw[i], top, height, minAndMax[0], minAndMax[1]));
+			}
+			top += height + 2;
+		}
 
 		Highcharts.chart('mainChart', {
 			title: {
@@ -23,57 +86,7 @@ $(() => {
 				text: subtitle
 			},
 
-			yAxis: [
-				{
-					title: {
-						text: 'Round'
-					},
-					min: lap.minRpm,
-					max: lap.maxRpm,
-					height: '20%',
-					lineWidth: 2,
-					startOnTick: false,
-					endOnTick: false
-				},
-				{
-					title: {
-						text: 'Degree (positive = left, negative = right)'
-					},
-					min: lap.minSteeringAngle,
-					max: lap.maxSteeringAngle,
-					top: '25%',
-					height: '20%',
-					offset: 0,
-					lineWidth: 2,
-					startOnTick: false,
-					endOnTick: false
-				},
-				{
-					title: {
-						text: 'Number'
-					},
-					min: lap.minGear,
-					max: lap.maxGear,
-					top: '50%',
-					height: '20%',
-					offset: 0,
-					lineWidth: 2,
-					startOnTick: false,
-					endOnTick: false
-				},
-				{
-					title: {
-						text: '%'
-					},
-					min: 0,
-					max: 100,
-					top: '75%',
-					height: '25%',
-					offset: 0,
-					lineWidth: 2
-				}
-			],
-
+			yAxis: yAxis,
 			xAxis: {},
 
 			legend: {
@@ -82,43 +95,7 @@ $(() => {
 				verticalAlign: 'middle'
 			},
 
-			series: [
-				{
-					name: 'RPM',
-					data: rpm,
-					color: '#ed5102'
-				},
-				{
-					name: 'Steering angle',
-					data: angle,
-					color: '#c21737',
-					yAxis: 1
-				},
-				{
-					name: 'Gear',
-					data: gear,
-					color: '#bfde10',
-					yAxis: 2
-				},
-				{
-					name: 'Throttle',
-					data: throttle,
-					color: '#61eb34',
-					yAxis: 3
-				},
-				{
-					name: 'Brake',
-					data: brake,
-					color: '#eb0f07',
-					yAxis: 3
-				},
-				{
-					name: 'Clutch',
-					data: clutch,
-					color: '#05acfa',
-					yAxis: 3
-				}
-			],
+			series: series,
 
 			responsive: {
 				rules: [{

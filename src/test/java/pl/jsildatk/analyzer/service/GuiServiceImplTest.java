@@ -42,10 +42,11 @@ public class GuiServiceImplTest {
         final ModelMap result = guiService.createModel(telemetryDTO);
         
         // then
-        assertThat(result, aMapWithSize(3));
+        assertThat(result, aMapWithSize(4));
         assertThat(result.get("title"), is("test - test - test - test"));
         assertThat(result.get("subtitle"), is("test - test - test - test"));
         assertThat(result.get("laps"), is(notNullValue()));
+        assertThat(result.get("columns"), is(notNullValue()));
     }
     
 }

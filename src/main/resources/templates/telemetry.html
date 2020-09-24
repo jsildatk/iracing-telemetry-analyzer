@@ -7,6 +7,7 @@
 	<link th:href="@{/css/telemetry.css}" rel="stylesheet"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script th:src="@{/js/chart.js}"></script>
+	<script th:src="@{/js/variables.js}"></script>
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/series-label.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -27,6 +28,12 @@
 			<option th:each="lap,iter : ${laps}" th:value="${iter.index}"
 					th:text="${lap.number + ' (' + lap.lapTime + ') '}"></option>
 		</select>
+		<div id="columns">
+			<th:block th:each="column : ${columns}">
+				<input type="checkbox" th:id="${column.getKey()}"/>
+				<label th:for="${column.getKey()}" th:text="${column.getValue()}"></label>
+			</th:block>
+		</div>
 	</div>
 	<div id="mainChart"></div>
 </figure>

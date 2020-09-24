@@ -49,3 +49,12 @@
     background-color: #e3c118;
     color: white;
 }
+
+#columns {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+    color: #e3c118;
+    font-size: larger;
+    font-weight: bold;
+}

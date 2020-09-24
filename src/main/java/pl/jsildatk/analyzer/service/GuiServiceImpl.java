@@ -1,6 +1,7 @@
 package pl.jsildatk.analyzer.service;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import pl.jsildatk.analyzer.dto.TelemetryInfo;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -26,6 +28,7 @@ public class GuiServiceImpl implements GuiService {
         final ModelMap modelMap = new ModelMap();
         createTelemetryInfoModel(modelMap, telemetryDTO.getTelemetryInfo());
         createTelemetryLapModel(modelMap, telemetryDTO.getTelemetryData());
+        createTelemetryColumns(modelMap);
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
         log.info("Time elapsed for converting telemetry to model: {} milliseconds", timeElapsed);
@@ -39,6 +42,17 @@ public class GuiServiceImpl implements GuiService {
     
     private void createTelemetryLapModel(ModelMap modelMap, List<List<TelemetryData>> telemetryData) {
         modelMap.put("laps", telemetryDataResolver.getLapsData(telemetryData));
+    }
+    
+    private void createTelemetryColumns(ModelMap modelMap) {
+        final Map<String, String> columns = ImmutableMap.<String, String> builder()
+                .put("RPM", "RPM")
+                .put("SteeringWheelAngle", "Steering Wheel Angle")
+                .put("Gear", "Gear")
+                .put("Speed", "Speed")
+                .put("Inputs", "Inputs")
+                .build();
+        modelMap.put("columns", columns);
     }
     
     private String createTitle(TelemetryInfo telemetryInfo) {
