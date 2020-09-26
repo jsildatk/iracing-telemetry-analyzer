@@ -45,7 +45,7 @@ public class TelemetryDataParserImplTest {
         
         // then
         final TelemetryInfo expected =
-                new TelemetryInfo("Test Driver", "dallarap217", "imola gp", "Test", "12/09/2020", "21:27:07", "60 Hz", "0:20");
+                new TelemetryInfo("Test Driver", CarType.LMP2_DallaraP217, "imola gp", "Test", "12/09/2020", "21:27:07", "60 Hz", "0:20");
         assertThat(result, is(expected));
     }
     

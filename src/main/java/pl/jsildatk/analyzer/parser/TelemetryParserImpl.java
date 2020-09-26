@@ -42,8 +42,8 @@ public class TelemetryParserImpl implements TelemetryParser {
         }
         
         final TelemetryInfo telemetryInfo =
-                new TelemetryInfo(lines.get(0)[1], lines.get(1)[1], lines.get(2)[1], lines.get(3)[1], lines.get(4)[1], lines.get(5)[1],
-                        createSampleRate(lines.get(6)), createSessionTime(lines.get(7)));
+                new TelemetryInfo(lines.get(0)[1], CarType.getByOriginalName(lines.get(1)[1]), lines.get(2)[1], lines.get(3)[1], lines.get(4)[1],
+                        lines.get(5)[1], createSampleRate(lines.get(6)), createSessionTime(lines.get(7)));
         log.info("Parsed telemetry info: {}", telemetryInfo);
         return telemetryInfo;
     }

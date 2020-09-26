@@ -5,7 +5,9 @@ const speedDraw = { name: 'Speed', data: [], color: '#112322', yAxis: 0 };
 const throttleDraw = { name: 'Throttle', data: [], color: '#00ffa4', yAxis: 0 };
 const brakeDraw = { name: 'Brake', data: [], color: '#eb0f07', yAxis: 0 };
 const clutchDraw = { name: 'Clutch', data: [], color: '#05acfa', yAxis: 0 };
-const drawCollection = [rpmDraw, angleDraw, gearDraw, speedDraw, throttleDraw, brakeDraw, clutchDraw];
+const drsDraw = { name: 'DRS_Status', data: [], color: '#d5f505', yAxis: 0 };
+const mguKDraw = { name: 'dcMGUKDeployMode', data: [], color: '#00b081', yAxis: 0 };
+const drawCollection = [rpmDraw, angleDraw, gearDraw, speedDraw, throttleDraw, brakeDraw, clutchDraw, drsDraw, mguKDraw];
 
 const yAxisRpm = {
 	label: 'RPM',
@@ -77,7 +79,35 @@ const yAxisInputs = {
 	startOnTick: false,
 	endOnTick: false
 };
-const yAxisCollection = [yAxisRpm, yAxisSteeringAngle, yAxisGear, yAxisSpeed, yAxisInputs];
+const yAxisDrs = {
+	label: 'DRS_Status',
+	title: {
+		text: 'Status'
+	},
+	min: 0,
+	max: 0,
+	top: '',
+	height: '',
+	offset: 0,
+	lineWidth: 2,
+	startOnTick: false,
+	endOnTick: false
+};
+const yAxisMguK = {
+	label: 'dcMGUKDeployMode',
+	title: {
+		text: 'Mode'
+	},
+	min: 0,
+	max: 0,
+	top: '',
+	height: '',
+	offset: 0,
+	lineWidth: 2,
+	startOnTick: false,
+	endOnTick: false
+};
+const yAxisCollection = [yAxisRpm, yAxisSteeringAngle, yAxisGear, yAxisSpeed, yAxisInputs, yAxisDrs, yAxisMguK];
 
 function setSeriesData(drawData, index) {
 	let data = drawCollection.find(element => element.name === drawData.type);

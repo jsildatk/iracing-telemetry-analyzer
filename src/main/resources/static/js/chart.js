@@ -26,6 +26,10 @@ $(() => {
 				return [lap.minGear, lap.maxGear];
 			case 'Speed':
 				return [lap.minSpeed, lap.maxSpeed];
+			case 'dcMGUKDeployMode':
+				return [25, 75];
+			case 'DRS_Status':
+				return [0, 3];
 			default :
 				return null;
 		}

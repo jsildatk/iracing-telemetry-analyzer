@@ -9,8 +9,11 @@ import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryDTO;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
+import pl.jsildatk.analyzer.parser.CarType;
 import pl.jsildatk.analyzer.parser.Type;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
+
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.mock;
@@ -33,20 +36,39 @@ public class GuiServiceImplTest {
     }
     
     @Test
-    public void testCreateModel() {
+    public void testCreateModelForLMP2() {
         // given
-        final TelemetryDTO telemetryDTO = new TelemetryDTO(ImmutableList.of(), new TelemetryInfo("test", "test", "test", "test", "test",
-                "test", "test", "test"));
+        final TelemetryDTO telemetryDTO =
+                new TelemetryDTO(ImmutableList.of(), new TelemetryInfo("test", CarType.LMP2_DallaraP217, "test", "test", "test",
+                        "test", "test", "test"));
         
         // when
         final ModelMap result = guiService.createModel(telemetryDTO);
         
         // then
         assertThat(result, aMapWithSize(4));
-        assertThat(result.get("title"), is("test - test - test - test"));
+        assertThat(result.get("title"), is("test - " + CarType.LMP2_DallaraP217.getOriginalName() + " - test - test"));
         assertThat(result.get("subtitle"), is("test - test - test - test"));
         assertThat(result.get("laps"), is(notNullValue()));
-        assertThat(result.get("columns"), is(notNullValue()));
+        assertThat((Map<String, String>) result.get("columns"), aMapWithSize(5));
+    }
+    
+    @Test
+    public void testCreateModelForF1() {
+        // given
+        final TelemetryDTO telemetryDTO =
+                new TelemetryDTO(ImmutableList.of(), new TelemetryInfo("test", CarType.F1_McLarenMp430, "test", "test", "test",
+                        "test", "test", "test"));
+        
+        // when
+        final ModelMap result = guiService.createModel(telemetryDTO);
+        
+        // then
+        assertThat(result, aMapWithSize(4));
+        assertThat(result.get("title"), is("test - " + CarType.F1_McLarenMp430.getOriginalName() + " - test - test"));
+        assertThat(result.get("subtitle"), is("test - test - test - test"));
+        assertThat(result.get("laps"), is(notNullValue()));
+        assertThat((Map<String, String>) result.get("columns"), aMapWithSize(7));
     }
     
 }

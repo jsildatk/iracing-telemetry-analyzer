@@ -1,7 +1,7 @@
 package pl.jsildatk.analyzer.service;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import pl.jsildatk.analyzer.dto.TelemetryDTO;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
+import pl.jsildatk.analyzer.parser.CarType;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class GuiServiceImpl implements GuiService {
         final ModelMap modelMap = new ModelMap();
         createTelemetryInfoModel(modelMap, telemetryDTO.getTelemetryInfo());
         createTelemetryLapModel(modelMap, telemetryDTO.getTelemetryData());
-        createTelemetryColumns(modelMap);
+        createTelemetryColumns(modelMap, telemetryDTO.getTelemetryInfo());
         
         final long timeElapsed = sw.elapsed(TimeUnit.MILLISECONDS);
         log.info("Time elapsed for converting telemetry to model: {} milliseconds", timeElapsed);
@@ -44,19 +45,23 @@ public class GuiServiceImpl implements GuiService {
         modelMap.put("laps", telemetryDataResolver.getLapsData(telemetryData));
     }
     
-    private void createTelemetryColumns(ModelMap modelMap) {
-        final Map<String, String> columns = ImmutableMap.<String, String> builder()
-                .put("RPM", "RPM")
-                .put("SteeringWheelAngle", "Steering Wheel Angle")
-                .put("Gear", "Gear")
-                .put("Speed", "Speed")
-                .put("Inputs", "Inputs")
-                .build();
+    private void createTelemetryColumns(ModelMap modelMap, TelemetryInfo telemetryInfo) {
+        final Map<String, String> columns = Maps.newHashMap();
+        columns.put("RPM", "RPM");
+        columns.put("SteeringWheelAngle", "Steering Wheel Angle");
+        columns.put("Gear", "Gear");
+        columns.put("Speed", "Speed");
+        columns.put("Inputs", "Inputs");
+        if ( telemetryInfo.getVehicle() == CarType.F1_McLarenMp430 ) {
+            columns.put("dcMGUKDeployMode", "MGU-K deploy mode");
+            columns.put("DRS_Status", "DRS status");
+        }
         modelMap.put("columns", columns);
     }
     
     private String createTitle(TelemetryInfo telemetryInfo) {
-        return telemetryInfo.getDriver() + " - " + telemetryInfo.getVehicle() + " - " + telemetryInfo.getVenue() + " - " + telemetryInfo.getSession();
+        return telemetryInfo.getDriver() + " - " + telemetryInfo.getVehicle().getOriginalName() + " - " + telemetryInfo.getVenue() + " - " +
+               telemetryInfo.getSession();
     }
     
     private String createSubtitle(TelemetryInfo telemetryInfo) {

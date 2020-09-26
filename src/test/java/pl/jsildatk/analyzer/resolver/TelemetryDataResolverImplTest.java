@@ -44,6 +44,19 @@ public class TelemetryDataResolverImplTest {
     }
     
     @Test
+    public void testResolvingHeaderForF1Car() {
+        // given
+        final String[] header = new String[]{ "Throttle", "Brake", "Clutch", "dcMGUKDeployMode", "DRS_Status" };
+        
+        // when
+        final Map<Integer, Type> result = telemetryDataResolver.resolveHeader(header);
+        
+        // then
+        assertThat(result, allOf(hasEntry(0, Type.Throttle), hasEntry(1, Type.Brake), hasEntry(2, Type.Clutch), hasEntry(3, Type.dcMGUKDeployMode),
+                hasEntry(4, Type.DRS_Status)));
+    }
+    
+    @Test
     public void testResolvingData() throws Exception {
         // given
         final Map<Integer, Type> map = createIntegerToTypeMapping();
