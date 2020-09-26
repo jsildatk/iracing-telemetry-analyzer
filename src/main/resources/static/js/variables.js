@@ -82,13 +82,14 @@ const yAxisCollection = [yAxisRpm, yAxisSteeringAngle, yAxisGear, yAxisSpeed, yA
 function setSeriesData(drawData, index) {
 	let data = drawCollection.find(element => element.name === drawData.type);
 	data.data = drawData.value;
-	if ( data.name !== 'Brake' && data.name !== 'Clutch' ) {
-		data.yAxis = index;
-	} else if ( data.name === 'Brake' ) {
+	if ( data.name === 'Brake' ) {
 		data.yAxis = index - 1;
 	} else if ( data.name === 'Clutch' ) {
 		data.yAxis = index - 2;
+	} else {
+		data.yAxis = index;
 	}
+
 	return data;
 }
 

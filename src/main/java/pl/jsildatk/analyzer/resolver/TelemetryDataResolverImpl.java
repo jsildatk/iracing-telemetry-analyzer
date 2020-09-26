@@ -23,6 +23,8 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     
     private static final DoubleFunction<Double> METERS_TO_KILOMETERS = meters -> meters * 3600 / 1000;
     
+    private static final DoubleFunction<Double> REVERSE_CLUTCH = clutch -> 100.0 - clutch;
+    
     @Override
     public Map<Integer, Type> resolveHeader(String[] header) {
         final Stopwatch sw = Stopwatch.createStarted();
@@ -61,10 +63,10 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         final List<TelemetryLap> result = Lists.newArrayList();
         for ( Integer lap : laps ) {
             final List<SingleTypeData> dataByLap = getDataByLap(data, lap);
-            final double[] rpm = getMinAndMaxRpm(dataByLap);
-            final int[] gear = getMinAndMaxGear(dataByLap);
-            final double[] steeringWheelAngle = getMinAndMaxSteeringWheelAngle(dataByLap);
-            final double[] speed = getMinAndMaxSpeed(dataByLap);
+            final double[] rpm = getMinAndMaxForDoubleType(dataByLap, Type.RPM);
+            final int[] gear = getMinAndMaxForIntegerType(dataByLap, Type.Gear);
+            final double[] steeringWheelAngle = getMinAndMaxForDoubleType(dataByLap, Type.SteeringWheelAngle);
+            final double[] speed = getMinAndMaxForDoubleType(dataByLap, Type.Speed);
             result.add(new TelemetryLap(lap, getLapTime(dataByLap), gear[0], gear[1], rpm[0], rpm[1], steeringWheelAngle[0], steeringWheelAngle[1],
                     speed[0], speed[1], dataByLap));
         }
@@ -108,14 +110,15 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
             for ( TelemetryData telemetryData : datum ) {
                 final Type telemetryDataType = telemetryData.getType();
                 if ( telemetryDataType == type ) {
+                    final double value = telemetryData.getValue();
                     if ( telemetryDataType == Type.Clutch ) { // clutch's value is reversed for some reason
-                        result.add(100.0 - telemetryData.getValue());
+                        result.add(REVERSE_CLUTCH.apply(value));
                     } else if ( telemetryDataType == Type.SteeringWheelAngle ) { // convert steering wheel angle from radians to degree
-                        result.add(Math.toDegrees(telemetryData.getValue()));
+                        result.add(Math.toDegrees(value));
                     } else if ( telemetryDataType == Type.Speed ) { // convert speed to km/h from m/s
-                        result.add(METERS_TO_KILOMETERS.apply(telemetryData.getValue()));
+                        result.add(METERS_TO_KILOMETERS.apply(value));
                     } else {
-                        result.add(telemetryData.getValue());
+                        result.add(value);
                     }
                 }
             }
@@ -130,23 +133,11 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
         return TimeUtils.formatLapTime(lapTime);
     }
     
-    private double[] getMinAndMaxSteeringWheelAngle(List<SingleTypeData> data) {
-        return getMinAndMaxForDoubleType(data, Type.SteeringWheelAngle);
-    }
-    
-    private int[] getMinAndMaxGear(List<SingleTypeData> data) {
-        final IntSummaryStatistics summaryStatistics = getValuesByType(data, Type.Gear).stream()
+    private int[] getMinAndMaxForIntegerType(List<SingleTypeData> data, Type type) {
+        final IntSummaryStatistics summaryStatistics = getValuesByType(data, type).stream()
                 .mapToInt(Double::intValue)
                 .summaryStatistics();
         return new int[]{ summaryStatistics.getMin(), summaryStatistics.getMax() };
-    }
-    
-    private double[] getMinAndMaxRpm(List<SingleTypeData> data) {
-        return getMinAndMaxForDoubleType(data, Type.RPM);
-    }
-    
-    private double[] getMinAndMaxSpeed(List<SingleTypeData> data) {
-        return getMinAndMaxForDoubleType(data, Type.Speed);
     }
     
     private double[] getMinAndMaxForDoubleType(List<SingleTypeData> data, Type type) {
