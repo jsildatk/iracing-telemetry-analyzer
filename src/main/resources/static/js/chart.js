@@ -29,7 +29,7 @@ $(() => {
 			case 'dcMGUKDeployMode':
 				return [25, 75];
 			case 'DRS_Status':
-				return [0, 3];
+				return [0, 1];
 			default :
 				return null;
 		}

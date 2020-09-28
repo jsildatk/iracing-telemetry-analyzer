@@ -33,6 +33,13 @@
     background: #f1f7ff;
 }
 
+option:hover,
+option:focus,
+option:active,
+option:checked {
+    background: linear-gradient(#5A2569, #5A2569);
+}
+
 #mainChart {
     margin-top: 20px;
     height: 100%;

@@ -25,6 +25,8 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     
     private static final DoubleFunction<Double> REVERSE_CLUTCH = clutch -> 100.0 - clutch;
     
+    private static final DoubleFunction<Double> RESOLVE_DRS = drs -> drs == 3 ? 1.0 : 0.0;
+    
     @Override
     public Map<Integer, Type> resolveHeader(String[] header) {
         final Stopwatch sw = Stopwatch.createStarted();
@@ -117,6 +119,8 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
                         result.add(Math.toDegrees(value));
                     } else if ( telemetryDataType == Type.Speed ) { // convert speed to km/h from m/s
                         result.add(METERS_TO_KILOMETERS.apply(value));
+                    } else if ( telemetryDataType == Type.DRS_Status ) { // convert DRS to 0/1 status from 0/1/2/3
+                        result.add(RESOLVE_DRS.apply(value));
                     } else {
                         result.add(value);
                     }
