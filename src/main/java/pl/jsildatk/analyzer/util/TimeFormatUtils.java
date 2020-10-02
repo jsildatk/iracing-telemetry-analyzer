@@ -5,8 +5,13 @@ import lombok.experimental.UtilityClass;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Utility class for formatting time.
+ *
+ * @author Jakub Sildatk
+ */
 @UtilityClass
-public class TimeUtils {
+public class TimeFormatUtils {
     
     /**
      * Format session time to: hh:MM:ss
@@ -47,9 +52,11 @@ public class TimeUtils {
                 .doubleValue();
         final int decimalIndex = String.valueOf(seconds)
                 .indexOf(".");
+        
         final String secondsAsString = String.valueOf(seconds);
         final String integerPart = secondsAsString.substring(0, decimalIndex);
         String decimalPart = secondsAsString.substring(decimalIndex + 1);
+        
         if ( decimalPart.length() == 1 ) {
             decimalPart = decimalPart + "00";
         } else if ( decimalPart.length() == 2 ) {

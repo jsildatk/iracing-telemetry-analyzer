@@ -10,7 +10,7 @@ import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
 import pl.jsildatk.analyzer.parser.Type;
-import pl.jsildatk.analyzer.util.TimeUtils;
+import pl.jsildatk.analyzer.util.TimeFormatUtils;
 
 import java.io.FileReader;
 import java.util.List;
@@ -102,7 +102,7 @@ public class TelemetryDataResolverImplTest {
         assertThat(result, hasSize(1));
         
         assertThat(resultLap.getNumber(), is((int) lapData.getValue()));
-        assertThat(resultLap.getLapTime(), is(TimeUtils.formatLapTime(lapTimeData.getValue())));
+        assertThat(resultLap.getLapTime(), is(TimeFormatUtils.formatLapTime(lapTimeData.getValue())));
         assertThat(resultLap.getMinGear(), is((int) gearData.getValue()));
         assertThat(resultLap.getMaxGear(), is((int) gearData1.getValue()));
         assertThat(resultLap.getMinRpm(), is(rpmData.getValue()));

@@ -7,6 +7,7 @@ import pl.jsildatk.analyzer.parser.Type;
 /**
  * Immutable class representing single telemetry tick with {@link Type} and value represented as double.
  *
+ * @author Jakub Sildatk
  * @since 1.0.0
  */
 @Value

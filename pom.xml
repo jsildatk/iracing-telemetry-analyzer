@@ -24,6 +24,7 @@
 		<slf4j-log4j12.version>1.7.30</slf4j-log4j12.version>
 		<opencsv.version>5.2</opencsv.version>
 		<hamcrest-library.version>2.2</hamcrest-library.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -93,6 +94,14 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

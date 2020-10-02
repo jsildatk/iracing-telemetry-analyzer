@@ -3,9 +3,10 @@ package pl.jsildatk.analyzer.parser;
 import lombok.NonNull;
 
 /**
- * Mapping for cars from CSV file. Name is the same as value from CSV file.
+ * Mapping for cars from CSV file. Name is the same as value from CSV file. <br>
  * Such a mapping is needed for displaying additional telemetry columns on frontend.
  *
+ * @author Jakub Sildatk
  * @since 1.0.0
  */
 public enum CarType {
@@ -26,6 +27,14 @@ public enum CarType {
         return originalName;
     }
     
+    /**
+     * Get {@link CarType} by it's {@link CarType#originalName}.
+     *
+     * @param name original's name
+     * @return {@link CarType} paired with provided name
+     * @throws IllegalArgumentException if {@link CarType} for provided name does not exist
+     * @since 1.0.0
+     */
     public static CarType getByOriginalName(@NonNull String name) {
         for ( CarType type : values() ) {
             if ( type.originalName.equals(name) ) {

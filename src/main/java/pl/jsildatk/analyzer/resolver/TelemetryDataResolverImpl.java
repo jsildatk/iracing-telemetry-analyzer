@@ -11,7 +11,7 @@ import pl.jsildatk.analyzer.dto.SingleTypeData;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryLap;
 import pl.jsildatk.analyzer.parser.Type;
-import pl.jsildatk.analyzer.util.TimeUtils;
+import pl.jsildatk.analyzer.util.TimeFormatUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -134,7 +134,7 @@ public class TelemetryDataResolverImpl implements TelemetryDataResolver {
     private String getLapTime(List<SingleTypeData> data) {
         final List<Double> value = getValuesByType(data, Type.LapCurrentLapTime);
         final double lapTime = value.get(value.size() - 1);
-        return TimeUtils.formatLapTime(lapTime);
+        return TimeFormatUtils.formatLapTime(lapTime);
     }
     
     private int[] getMinAndMaxForIntegerType(List<SingleTypeData> data, Type type) {

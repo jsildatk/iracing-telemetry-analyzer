@@ -1,8 +1,10 @@
 package pl.jsildatk.analyzer.parser;
 
 /**
- * Mapping types from CSV file. Only those types will be parsed from CSV file.
+ * Mapping for types from CSV file. Only those types will be parsed from CSV file. <br>
+ * Name has to be exactly the same as the column's name from CSV file.
  *
+ * @author Jakub Sildatk
  * @since 1.0.0
  */
 public enum Type {

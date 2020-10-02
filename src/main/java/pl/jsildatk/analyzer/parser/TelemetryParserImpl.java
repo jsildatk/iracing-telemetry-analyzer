@@ -3,13 +3,14 @@ package pl.jsildatk.analyzer.parser;
 import com.google.common.collect.Lists;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.jsildatk.analyzer.dto.TelemetryData;
 import pl.jsildatk.analyzer.dto.TelemetryInfo;
 import pl.jsildatk.analyzer.resolver.TelemetryDataResolver;
-import pl.jsildatk.analyzer.util.TimeUtils;
+import pl.jsildatk.analyzer.util.TimeFormatUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,7 +28,7 @@ public class TelemetryParserImpl implements TelemetryParser {
     private final TelemetryDataResolver telemetryDataResolver;
     
     @Override
-    public TelemetryInfo parseTelemetryInfo(InputStreamReader inputStreamReader) throws IOException {
+    public TelemetryInfo parseTelemetryInfo(@NonNull InputStreamReader inputStreamReader) throws IOException {
         final CSVReader csvReader = new CSVReader(inputStreamReader);
         final List<String[]> lines = Lists.newArrayListWithCapacity(8);
         
@@ -49,7 +50,7 @@ public class TelemetryParserImpl implements TelemetryParser {
     }
     
     @Override
-    public List<List<TelemetryData>> parseTelemetryData(InputStreamReader inputStreamReader) throws IOException, CsvValidationException {
+    public List<List<TelemetryData>> parseTelemetryData(@NonNull InputStreamReader inputStreamReader) throws IOException, CsvValidationException {
         final CSVReader csvReader = new CSVReader(inputStreamReader);
         csvReader.skip(TELEMETRY_INFO_LINES + 1);
         final String[] header = csvReader.readNext();
@@ -74,7 +75,7 @@ public class TelemetryParserImpl implements TelemetryParser {
     }
     
     private String createSessionTime(String[] line) {
-        return TimeUtils.formatSessionTime(Double.parseDouble(line[1]));
+        return TimeFormatUtils.formatSessionTime(Double.parseDouble(line[1]));
     }
     
     private String createSampleRate(String[] line) {
